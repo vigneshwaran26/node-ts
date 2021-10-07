@@ -4,8 +4,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var express_1 = __importDefault(require("express"));
+require('dotenv').config();
 var app = (0, express_1.default)();
+var port = process.env.PORT || 4000;
 app.get('/', function (req, res, next) {
     res.send('hello');
 });
-app.listen(5000, function () { return console.log('Server running'); });
+app.listen(port, function () { return console.log("Server running at port " + port); });
