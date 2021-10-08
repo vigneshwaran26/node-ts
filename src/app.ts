@@ -1,22 +1,29 @@
-import express,{Application,Request,Response,NextFunction} from 'express';
+import express,{Application,Request,Response,NextFunction, Router} from 'express';
+import cors, { CorsOptions } from 'cors';
 require('dotenv').config();
-import { Currency } from './models/currency';
 
 
 const app:Application=express();
-const port = process.env.PORT||4000;
+const port = process.env.PORT||5000;
 
-
-function getfunction(){
-    let currency = new Currency();
-    currency.Base = "USD";
+var whitelist = ['http://localhost:3000']
+var corsOptions:CorsOptions = {
+  origin: function (origin:any, callback:any) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true)
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  }
 }
 
+app.set('view engine', 'ejs');
+app.use(cors(corsOptions))
+app.use('/api/rates',require('./api/currency'))
 
-
-app.get('/',(req:Request, res:Response, next:NextFunction)=>{
-    res.send('hello');
-});
+app.use('/**', (req,res)=>{
+    res.status(404).send("Api your searching for is not avail...")
+})
 
 app.listen(port,()=>{
     console.log(`Server running at port ${port}`)
